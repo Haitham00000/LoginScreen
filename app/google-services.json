@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "704695792802",
-    "firebase_url": "https://logindemo-fa322.firebaseio.com",
-    "project_id": "logindemo-fa322",
-    "storage_bucket": "logindemo-fa322.appspot.com"
+    "project_number": "862023562663",
+    "firebase_url": "https://logindemo-4f109.firebaseio.com",
+    "project_id": "logindemo-4f109",
+    "storage_bucket": "logindemo-4f109.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:704695792802:android:3c504acc248e24d4c953fb",
+        "mobilesdk_app_id": "1:862023562663:android:95881a44de361a08137282",
         "android_client_info": {
           "package_name": "com.example.loginscreen"
         }
       },
       "oauth_client": [
         {
-          "client_id": "704695792802-16podde14h66n7mahipbdhcbkuou0c5f.apps.googleusercontent.com",
+          "client_id": "862023562663-3m845ks82h7623ptmt9s11sf0ls2unck.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.loginscreen",
+            "certificate_hash": "0e03e07d5468b87fa21ac09cb2139014833c6aa8"
+          }
+        },
+        {
+          "client_id": "862023562663-890ao00ktjqv1dv7lrr54qhsjq7peflo.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAtSbAhlqXzTjOFq-KO-4V6wC5d0COda7E"
+          "current_key": "AIzaSyD89ggpKa7713FeVDvJ3EW0vVwnkdcg8Q8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "704695792802-16podde14h66n7mahipbdhcbkuou0c5f.apps.googleusercontent.com",
+              "client_id": "862023562663-890ao00ktjqv1dv7lrr54qhsjq7peflo.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
