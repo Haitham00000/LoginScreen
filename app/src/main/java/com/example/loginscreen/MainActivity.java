@@ -5,10 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,22 +31,35 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "fbd";
     private DatabaseReference mRef;
 
+    int progressStatus = 0;
+    Handler handler = new Handler();
+    ProgressBar progressBar;
+    TextView tvProgress;
+
+
     TextView tvMsg;
     ImageView ivImg;
+    Button btnSubmit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         ivImg = findViewById(R.id.iv_img);
         tvMsg = findViewById(R.id.tv_msg);
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        tvProgress = (TextView) findViewById(R.id.tv_progress);
+        setProgressBarVisibility(View.INVISIBLE);
 
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         mRef = database.getReference("image_state");
 
-        Button btnSubmit = findViewById(R.id.btn_submit);
+
+        btnSubmit = findViewById(R.id.btn_submit);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,8 +100,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void StartProgress() {
-        readMsg();
+
+        btnSubmit.setClickable(false);
+        Toast.makeText(this, "huh", Toast.LENGTH_SHORT).show();
+
+        setProgressBarVisibility(View.VISIBLE);
+
+        // Start long running operation in a background thread
+        new Thread(new Runnable() {
+            public void run() {
+                while (progressStatus < 100) {
+                    progressStatus += 1;
+                    // Update the progress bar and display the
+                    //current value in the text view
+                    handler.post(new Runnable() {
+                        public void run() {
+                            progressBar.setProgress(progressStatus);
+                            tvProgress.setText(progressStatus + "/" + progressBar.getMax());
+                        }
+                    });
+                    try {
+                        // Sleep for 150 milliseconds.
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                readMsg();
+            }
+        }).start();
+
+
     }
+
 
     private void readMsg() {
 
@@ -103,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
                     ImageState value = d.getValue(ImageState.class);
                     Log.d(TAG, "Value is: " + value);
-                    tvMsg.setText(value.getAdminMsg());
+                    tvMsg.setText(value.getUserMsg());
 
                     if (value.getColorRed()) {
                         tvMsg.setTextColor((getResources().getColor(R.color.colorRed)));
@@ -120,7 +166,19 @@ public class MainActivity extends AppCompatActivity {
                 // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
+
+
         });
+
+        btnSubmit.setClickable(true);
+
+        progressStatus = 0;
+        setProgressBarVisibility(View.INVISIBLE);
+    }
+
+    private void setProgressBarVisibility(int visibility) {
+        progressBar.setVisibility(visibility);
+        tvProgress.setVisibility(visibility);
     }
 
 

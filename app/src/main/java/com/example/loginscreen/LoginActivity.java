@@ -2,26 +2,41 @@ package com.example.loginscreen;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
 
+    private static final String TAG = "login_firebase";
     private EditText Name, Password;
     private TextView Info;
     private Button Login;
     private int counter = 3;
     private TextView userRegisteration;
+    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mAuth = FirebaseAuth.getInstance();
         Name = (EditText) findViewById(R.id.etName);
         Password = (EditText) findViewById(R.id.etPassword);
         Info = (TextView) findViewById(R.id.tvInfo);
@@ -32,11 +47,22 @@ public class LoginActivity extends AppCompatActivity {
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Name.getText().toString().equals("admin") && Password.getText().toString().equals("admin")) {
-                    startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
 
+                String name = Name.getText().toString();
+                String pass = Password.getText().toString();
+
+                if (!TextUtils.isEmpty(name) || !TextUtils.isEmpty(pass)) {
+
+                    if (name.equals("admin") && pass.equals("admin")) {
+                        startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
+                    } else {
+
+                        firebaseLogin(Name.getText().toString(), Password.getText().toString());
+
+
+                    }
                 } else {
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    Toast.makeText(LoginActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 }
                 // validate(Name.getText().toString(), Password.getText().toString());
             }
@@ -53,22 +79,36 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void validate(String userName, String userPassword) {
-        if ((userName == "Admin") && (userPassword == "1234")
-        ) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            //to move to the next activity
-            startActivity(intent);
-        } else {
-            counter--;
+    private void firebaseLogin(String email, String password) {
 
-            Info.setText("No of attempts remaining: " + String.valueOf(counter));
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
 
-            if (counter == 0) {
-                Login.setEnabled(false);
-            }
-        }
+                            counter--;
 
+                            Info.setText("No of attempts remaining: " + String.valueOf(counter));
+
+                            if (counter == 0) {
+                                Login.setEnabled(false);
+                            }
+
+                        }
+
+                    }
+                });
     }
+
 
 }
