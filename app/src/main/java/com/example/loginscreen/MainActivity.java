@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
     private void StartProgress() {
 
         btnSubmit.setClickable(false);
-        Toast.makeText(this, "huh", Toast.LENGTH_SHORT).show();
 
         setProgressBarVisibility(View.VISIBLE);
 
@@ -173,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         btnSubmit.setClickable(true);
 
         progressStatus = 0;
-        setProgressBarVisibility(View.INVISIBLE);
+        // setProgressBarVisibility(View.INVISIBLE);
     }
 
     private void setProgressBarVisibility(int visibility) {
