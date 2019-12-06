@@ -32,7 +32,12 @@ public class LoginActivity extends AppCompatActivity {
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                if (Name.getText().toString().equals("admin") && Password.getText().toString().equals("admin")) {
+                    startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
+
+                } else {
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                }
                 // validate(Name.getText().toString(), Password.getText().toString());
             }
         });
