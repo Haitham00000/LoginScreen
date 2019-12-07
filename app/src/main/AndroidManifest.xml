@@ -18,7 +18,7 @@
             android:label="Weka" />
         <activity
             android:name=".LoginActivity"
-            android:label="Login">
+            android:label="Weka">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
