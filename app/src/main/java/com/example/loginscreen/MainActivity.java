@@ -25,6 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import fake_image_detector.coder.genuine.com.weka.WekaImageReader;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMG = 100;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     Handler handler = new Handler();
     ProgressBar progressBar;
     TextView tvProgress;
-
+    WekaImageReader imageReader;
 
     TextView tvMsg;
     ImageView ivImg;
@@ -63,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 selectImage();
             }
         });
@@ -85,6 +86,17 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();
+
+                if (imageUri.getPath() != null) {
+                    //send image path to weka to get file string and start processing the info
+
+                    imageReader = new WekaImageReader();
+                    imageReader.setImageInfo(imageUri.getPath());
+                    imageReader.startWekaClassifier(MainActivity.this);
+
+                }
+
+
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 ivImg.setImageBitmap(selectedImage);
@@ -119,8 +131,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     try {
-                        // Sleep for 150 milliseconds.
-                        Thread.sleep(150);
+                        Thread.sleep(imageReader.getTime());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

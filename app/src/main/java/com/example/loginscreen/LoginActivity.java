@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(name) || !TextUtils.isEmpty(pass)) {
 
                     if (name.equals("admin") && pass.equals("admin")) {
-                        startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     } else {
 
                         firebaseLogin(Name.getText().toString(), Password.getText().toString());
